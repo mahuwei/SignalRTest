@@ -17,6 +17,14 @@ namespace SignalRTest {
         public void ConfigureServices(IServiceCollection services) {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddCors();
+
+            //services.AddCors(options => options.AddPolicy("CorsPolicy",
+            //    builder => {
+            //        builder.WithOrigins("http://localhost:4200")
+            //            .AllowAnyMethod()
+            //            .AllowAnyHeader()
+            //            .AllowCredentials();
+            //    }));
             services.AddSignalR();
         }
 
@@ -26,12 +34,21 @@ namespace SignalRTest {
 
             app.UseDefaultFiles();
             app.UseStaticFiles();
+
+            // 
+            app.UseCors(builder =>
+                builder.WithOrigins("http://localhost:4200") // Configuration["AllowedHosts"])
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials());
+
             app.UseSignalR(options => { options.MapHub<ChatHub>("/hub"); });
 
-            app.UseCors(builder =>
-                builder.WithOrigins(Configuration["AllowedHosts"])
-                    .AllowAnyMethod()
-                    .AllowAnyHeader());
+            //app.UseHttpsRedirection();
+            //app.UseStaticFiles();
+            //app.UseCookiePolicy();
+            //app.UseCors("CorsPolicy");
+            //app.UseSignalR(routes => { routes.MapHub<ChatHub>("/hub"); });
 
             app.UseMvc();
         }
