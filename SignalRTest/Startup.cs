@@ -17,14 +17,28 @@ namespace SignalRTest {
         public void ConfigureServices(IServiceCollection services) {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddCors();
+            services.AddIdentityServer()
+                .AddDeveloperSigningCredential();
 
             //services.AddCors(options => options.AddPolicy("CorsPolicy",
             //    builder => {
-            //        builder.WithOrigins("http://localhost:4200")
+            //        builder.AllowAnyOrigin() // .WithOrigins("http://localhost:4200")
             //            .AllowAnyMethod()
-            //            .AllowAnyHeader()
-            //            .AllowCredentials();
+            //            .AllowAnyHeader();
+            //            //.AllowCredentials();
             //    }));
+
+            services.AddCors(options => {
+                options.AddPolicy(
+                    "CorsPolicy",
+                    x => {
+                        x.AllowAnyHeader()
+                            .AllowAnyMethod()
+                            .SetIsOriginAllowed(_ => true)
+                            .AllowCredentials();
+                    });
+            });
+
             services.AddSignalR();
         }
 
@@ -35,21 +49,23 @@ namespace SignalRTest {
             app.UseDefaultFiles();
             app.UseStaticFiles();
 
-            // 
-            app.UseCors(builder =>
-                builder.WithOrigins("http://localhost:4200") // Configuration["AllowedHosts"])
-                    .AllowAnyMethod()
-                    .AllowAnyHeader()
-                    .AllowCredentials());
+            //app.UseCors(builder => {
+            //    builder.WithOrigins("http://localhost:4200") // Configuration["AllowedHosts"])
+            //        .AllowAnyMethod()
+            //        .AllowAnyHeader()
+            //        .AllowCredentials();
+            //    //builder.SetIsOriginAllowedToAllowWildcardSubdomains();
+            //});
 
-            app.UseSignalR(options => { options.MapHub<ChatHub>("/hub"); });
+            //app.UseSignalR(options => { options.MapHub<ChatHub>("/hub"); });
 
             //app.UseHttpsRedirection();
             //app.UseStaticFiles();
             //app.UseCookiePolicy();
-            //app.UseCors("CorsPolicy");
-            //app.UseSignalR(routes => { routes.MapHub<ChatHub>("/hub"); });
+            app.UseCors("CorsPolicy");
+            app.UseSignalR(routes => { routes.MapHub<ChatHub>("/hub"); });
 
+            //app.UseIdentityServer();
             app.UseMvc();
         }
     }
