@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -34,7 +35,10 @@ namespace SignalRTest {
                     x => {
                         x.AllowAnyHeader()
                             .AllowAnyMethod()
-                            .SetIsOriginAllowed(_ => true)
+                            .SetIsOriginAllowed(_ => {
+                                Console.WriteLine(_);
+                                return true;
+                            })
                             .AllowCredentials();
                     });
             });
