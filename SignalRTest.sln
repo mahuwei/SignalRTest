@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.329
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalRTest", "SignalRTest\SignalRTest.csproj", "{A3C2C6AD-0AE5-4506-8361-340C7672CFC0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SignalRTest", "SignalRTest\SignalRTest.csproj", "{A3C2C6AD-0AE5-4506-8361-340C7672CFC0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "Client\Client.csproj", "{677BE782-2446-421B-A8CD-64EEDB810FED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Client", "Client\Client.csproj", "{677BE782-2446-421B-A8CD-64EEDB810FED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RsaTest", "RsaTest\RsaTest.csproj", "{D4BE9700-D2A4-4543-A03E-653AA69E9DF9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{677BE782-2446-421B-A8CD-64EEDB810FED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{677BE782-2446-421B-A8CD-64EEDB810FED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{677BE782-2446-421B-A8CD-64EEDB810FED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D4BE9700-D2A4-4543-A03E-653AA69E9DF9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4BE9700-D2A4-4543-A03E-653AA69E9DF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D4BE9700-D2A4-4543-A03E-653AA69E9DF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D4BE9700-D2A4-4543-A03E-653AA69E9DF9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
