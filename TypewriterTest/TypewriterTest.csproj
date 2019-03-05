@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="WebEntities\dtos\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="WebEntities\employee-password.ts">
+      <CustomToolNamespace>Entities\EmployeePassword.cs</CustomToolNamespace>
+    </None>
+    <None Update="WebEntities\employee-status.ts">
+      <CustomToolNamespace>Entities\EmployeeStatus.cs</CustomToolNamespace>
+    </None>
+    <None Update="WebEntities\employee.ts">
+      <CustomToolNamespace>Entities\Employee.cs</CustomToolNamespace>
+    </None>
+    <None Update="WebEntities\entity.ts">
+      <CustomToolNamespace>Entities\Entity.cs</CustomToolNamespace>
+    </None>
+  </ItemGroup>
+
+</Project>
