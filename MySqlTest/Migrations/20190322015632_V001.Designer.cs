@@ -9,7 +9,7 @@ using MySqlTest;
 namespace MySqlTest.Migrations
 {
     [DbContext(typeof(MyContext))]
-    [Migration("20190321134334_V001")]
+    [Migration("20190322015632_V001")]
     partial class V001
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,6 +23,9 @@ namespace MySqlTest.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Address")
+                        .HasMaxLength(100);
 
                     b.Property<DateTime>("LastChange");
 
@@ -46,6 +49,50 @@ namespace MySqlTest.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Businesses");
+                });
+
+            modelBuilder.Entity("MySqlTest.Models.Employee", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<Guid>("BusinessId");
+
+                    b.Property<DateTime>("LastChange");
+
+                    b.Property<string>("Memo")
+                        .HasMaxLength(100);
+
+                    b.Property<string>("MobileNo")
+                        .HasMaxLength(20);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(30);
+
+                    b.Property<string>("No")
+                        .IsRequired()
+                        .HasMaxLength(8);
+
+                    b.Property<DateTime?>("RowFlag")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate();
+
+                    b.Property<int>("Status");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BusinessId");
+
+                    b.ToTable("Employees");
+                });
+
+            modelBuilder.Entity("MySqlTest.Models.Employee", b =>
+                {
+                    b.HasOne("MySqlTest.Models.Business", "Business")
+                        .WithMany()
+                        .HasForeignKey("BusinessId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

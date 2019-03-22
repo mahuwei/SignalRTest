@@ -8,10 +8,10 @@ using MySqlTest.Models;
 namespace MySqlTest.Controllers {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class MySqlController : ControllerBase {
+    public class BusinessController : ControllerBase {
         private readonly MyContext _mc;
 
-        public MySqlController(MyContext mc) {
+        public BusinessController(MyContext mc) {
             _mc = mc;
 
             if (EnumerableExtensions.Any(_mc.Businesses)) return;

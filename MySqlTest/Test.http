@@ -1,3 +1,24 @@
-﻿### 测试获取数据
+﻿# 测试
+### 获取商户数据
+GET http://localhost:5000/api/business/get HTTP/1.1
 
-GET http://localhost:5000/api/mySql/get HTTP/1.1
+### 获取员工数据
+GET http://localhost:5000/api/employee/get HTTP/1.1
+
+### 修改员工数据
+POST http://localhost:5000/api/employee/save HTTP/1.1
+Content-Type: application/json
+
+{
+    "businessId": "c645ebe6-a154-4972-bf59-145057a7239c",
+    "no": "001",
+    "name": "管理员",
+    "mobileNo": "13934238919",
+    "id": "2158877b-1666-4859-9300-4da0224f25b3",
+    "status": 0,
+    "rowFlag": "CNauasWzxl4=",
+    "lastChange": "2019-03-22T10:04:54.533614",
+    "isChanged": false,
+    "memo": null
+  }
+
