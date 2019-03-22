@@ -12,3 +12,11 @@
 
 1. `Server=m-v-m;Database=ef;User=root;Password=123456;Charset=utf8;`
 2. "Charset=utf8;"不是必须的，需要 mysql 启动时，添加参数：`--character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci` 否则不支持中文
+
+## docker build
+
+`docker build --rm -f "Dockerfile" -t mysqltest:latest .`
+
+## 启动
+
+`docker run -it --rm -p 5000:80 mysqltest:latest`
