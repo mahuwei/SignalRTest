@@ -20,3 +20,23 @@
 ## 启动
 
 `docker run -it --rm -p 5000:80 mysqltest:latest`
+
+## 提交镜像(命令可以看本博客命令部分的镜像命令)
+
+`docker commit -m="mysqltest" --author="mahuwei@qq.com" 1109a80c712b mysqltest:v1`
+提交命令解释：
+
+1. -m 是对提交的描述，author 是作者(选填)，后面的 1109a80c712b 是修改容器的 id (不是 image id)，后面的是新镜像名字和标签(tag)。
+2. 成功之后，会生成新的镜像 id
+3. 输入 docker images 查看镜像，会发现新的名为 spencer/django，标签为 v1 的镜像已经存在。
+
+## 综合：
+
+1. docker login --username=your_username registry.cn-beijing.aliyuncs.com
+2. docker tag [ImageId] registry.cn-beijing.aliyuncs.com/[命名空间]/[仓库名称]:[镜像版本号]
+3. docker push registry.cn-beijing.aliyuncs.com/[命名空间]/[仓库名称]:[镜像版本号]
+
+#
+
+docker build . -t mysqltest:v1
+docker run -p 5000:80 mysqltest:v1 -it

@@ -1,15 +1,16 @@
-﻿# 测试
+﻿@baseUrl = http://localhost:5000
+# 测试
 ### 测试是否正常启动
-GET http://localhost:5000/api/values
+GET {{baseUrl}}/api/values HTTP/1.1
 
 ### 获取商户数据
-GET http://localhost:5000/api/business/get HTTP/1.1
+GET {{baseUrl}}/api/business/get HTTP/1.1
 
 ### 获取员工数据
-GET http://localhost:5000/api/employee/get HTTP/1.1
+GET {{baseUrl}}/api/employee/get HTTP/1.1
 
 ### 修改员工数据
-POST http://localhost:5000/api/employee/save HTTP/1.1
+POST {{baseUrl}}/api/employee/save HTTP/1.1
 Content-Type: application/json
 
 {
