@@ -26,7 +26,7 @@ namespace MySqlTest
             // other service configurations go here
             services.AddDbContextPool<MyContext>( // replace "YourDbContext" with the class name of your DbContext
                 options => options.UseMySql(
-                    "Server=192.168.0.103;Database=ef;User=root;Password=123456;Charset=utf8;", // replace with your Connection String
+                    "Server=mysqltest-mysql;Database=ef;User=root;Password=123456;Charset=utf8;", // replace with your Connection String
                     mySqlOptions =>
                     {
                         mySqlOptions.ServerVersion(new Version(5, 7, 25),

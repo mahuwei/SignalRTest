@@ -1,4 +1,4 @@
-﻿@baseUrl = http://localhost:5000
+﻿@baseUrl = http://localhost
 # 测试
 ### 测试是否正常启动
 GET {{baseUrl}}/api/values HTTP/1.1

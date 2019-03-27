@@ -1,0 +1,45 @@
+version: "3.7"
+
+services:
+  mysqltest-mysql:
+    image: mysql:5.7.25
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    ports:
+      - "3306:3306"
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+    volumes:
+      - d:/mysql:/var/lib/mysql
+    networks:
+      - mysqltest-compose-network
+
+  mysqltest-compose:
+    image: mysqltest:v1
+    build:
+      context: .
+    restart: always
+    depends_on:
+      - mysqltest-mysql
+    networks:
+      - mysqltest-compose-network
+
+  mysqltest-nginx:
+    image: nginx:latest
+    build:
+      context: .
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    links:
+      - mysqltest-compose
+    depends_on:
+      - mysqltest-compose
+    networks:
+      - mysqltest-compose-network
+
+networks:
+  mysqltest-compose-network:
+    driver: bridge
