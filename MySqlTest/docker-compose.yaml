@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   mysqltest-mysql:
-    image: mahuwei/mysql:5.7.25
+    image: mysql:5.7.25
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     ports:
       - "3306:3306"
@@ -25,7 +25,7 @@ services:
       - mysqltest-compose-network
 
   mysqltest-nginx:
-    image: mahuwei/nginx:latest
+    image: nginx:latest
     build:
       context: .
     restart: always

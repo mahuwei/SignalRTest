@@ -32,7 +32,14 @@ namespace RsaTest {
             Console.WriteLine(" private key of Pkcs1:{0}",privatePkcs1);
             Console.WriteLine(" public key of Pkcs1:{0}",publicPkcs1);
 
+            Console.WriteLine("Guid转换String测试.---开始---");
+            var id = Guid.NewGuid();
 
+            string idString = id.ToString("N");
+            Console.WriteLine("Guid.ToString(N)={0},原guid:{1}", idString,id);
+            var idFromString = Guid.ParseExact(idString,"N");
+            Console.WriteLine("Guid.ParseExact(idString,N):{0} ,是否相等：{1}",idFromString,idFromString == id);
+            Console.WriteLine("Guid转换String测试.---结束。");
             Console.ReadLine();
         }
     }
