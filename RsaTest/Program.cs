@@ -6,6 +6,12 @@ using XC.RSAUtil;
 namespace RsaTest {
     internal class Program {
         private static void Main(string[] args) {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            var str = "筷开动1234Abc";
+            var gbk = Encoding.GetEncoding("GBK").GetBytes(str);
+            var gbkToStr = Encoding.GetEncoding("GBK").GetString(gbk);
+            Console.WriteLine($"GBK是否相同：{str == gbkToStr}\n");
+
             Console.WriteLine("获取Ticks测试------start-------");
             for (var i = 0; i < 10; i++) {
                 var ticks = DateTime.Now.Ticks.ToString();
