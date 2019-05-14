@@ -1,11 +1,28 @@
 ﻿using System;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using XC.RSAUtil;
 
 namespace RsaTest {
     internal class Program {
         private static void Main(string[] args) {
+            var input = ",130680807779,";
+            // 取匹配
+            var matches = Regex.Matches(input, @"(1)\d{10}")
+                .Select(m => m.Value)
+                .ToList();
+
+            matches = Regex.Matches(",1306808077701234,", @"(1)\d{10,20}")
+                .Select(m => m.Value)
+                .ToList();
+
+            matches = Regex.Matches("17703430350,,", @"(1)\d{10,20}")
+                .Select(m => m.Value)
+                .ToList();
+
+
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             var str = "筷开动1234Abc";
             var gbk = Encoding.GetEncoding("GBK").GetBytes(str);
@@ -17,6 +34,7 @@ namespace RsaTest {
                 var ticks = DateTime.Now.Ticks.ToString();
                 Console.WriteLine($"    {i} ticks:{ticks} len:{ticks.Length}");
             }
+
             Console.WriteLine("获取Ticks测试------end-------");
 
             var keyList = RsaKeyGenerator.XmlKey(2048);
@@ -35,7 +53,8 @@ namespace RsaTest {
             Console.WriteLine("\n签名测试：");
             var signData = rsaXmlUtil.SignData(source, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
             Console.WriteLine("   签名值：{0}", signData);
-            var verifyRet = rsaXmlUtil.VerifyData(source, signData, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+            var verifyRet =
+                rsaXmlUtil.VerifyData(source, signData, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
             Console.WriteLine("   验证签名：{0}", verifyRet);
 
             Console.WriteLine("\n签名转换:");
