@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace EfTest.Migrations
 {
-    public partial class V001 : Migration
+    public partial class V003 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

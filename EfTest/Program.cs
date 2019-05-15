@@ -6,41 +6,63 @@ namespace EfTest {
     internal class Program {
         private static void Main(string[] args) {
             Console.Title = "EFTest";
-            Add();
+            //Add();
 
-            Read();
+            //Read();
 
             var isContinue = true;
             do {
-                var cmd = Console.ReadLine().ToLower();
-                if (string.IsNullOrEmpty(cmd)) {
-                    continue;
-                }
-                switch (cmd) {
+                var cmd = Console.ReadLine()?.ToLower();
+                if (string.IsNullOrEmpty(cmd)) continue;
+
+                var input = cmd.Split(' ');
+                switch (input[0]) {
                     case "add":
                         Add();
                         break;
                     case "read":
                         Read();
                         break;
+                    case "update":
+                        if (input.Length == 1) break;
+
+                        Update(input[1]);
+                        break;
                     case "exit":
                     case "quit":
                         isContinue = false;
-                        break;
-                    default:
                         break;
                 }
             } while (isContinue);
         }
 
+        private static void Update(string no) {
+            Console.WriteLine(" 修改记录 -------开始-------");
+            using (var dc = new TestContext()) {
+                var business = dc.Businesses.FirstOrDefault(d => d.No == no.Trim().PadLeft(4, '0'));
+                if (business == null) {
+                    Console.WriteLine(" 没有找到原纪录。");
+                    return;
+                }
+
+                var index = business.Name.IndexOf("Update", StringComparison.Ordinal);
+                if (index > -1) business.Name = business.Name.Substring(0, index);
+
+                business.Name += $"Update:{DateTime.Now.ToLongTimeString()}";
+                dc.Businesses.Update(business);
+                dc.SaveChanges();
+            }
+
+            Console.WriteLine(" 修改记录 -------结束-------");
+        }
+
         private static void Read() {
             Console.WriteLine(" 读取记录 -------开始-------");
             using (var dc = new TestContext()) {
-                foreach (var b in dc.Businesses.OrderBy(d => d.No)) {
+                foreach (var b in dc.Businesses.OrderBy(d => d.No))
                     Console.WriteLine($"    no={b.No}, SIdOnAdd={b.SIdOnAdd}");
-                }
-
             }
+
             Console.WriteLine(" 读取记录 -------结束-------");
         }
 
@@ -56,8 +78,10 @@ namespace EfTest {
                     };
                     dc.Businesses.Add(b);
                 }
+
                 dc.SaveChanges();
             }
+
             Console.WriteLine(" 添加记录 -------结束-------");
         }
     }
