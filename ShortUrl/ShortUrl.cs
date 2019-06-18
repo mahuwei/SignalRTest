@@ -31,7 +31,7 @@ namespace ShortUrl {
         private static async Task<ShortUrlResult> CreateShortUrl(string token, string createUrl, string longUrl) {
             var client = CreateHttpClient(token);
             var response = await client.PostAsync(createUrl,
-                new StringContent(JsonConvert.SerializeObject(new {Url = longUrl})));
+                new StringContent(JsonConvert.SerializeObject(new { Url = longUrl })));
             if (response.IsSuccessStatusCode) {
                 var data = response.Content.ReadAsStringAsync();
                 var ret = JsonConvert.DeserializeObject<ShortUrlResult>(data.Result);
@@ -45,7 +45,7 @@ namespace ShortUrl {
         private static async Task<ShortUrlResult> QueryShortUrl(string token, string queryUrl, string shortUrl) {
             var client = CreateHttpClient(token);
             var response = await client.PostAsync(queryUrl,
-                new StringContent(JsonConvert.SerializeObject(new {ShortUrl = shortUrl})));
+                new StringContent(JsonConvert.SerializeObject(new { ShortUrl = shortUrl })));
             if (response.IsSuccessStatusCode) {
                 var data = response.Content.ReadAsStringAsync();
                 var ret = JsonConvert.DeserializeObject<ShortUrlResult>(data.Result);
@@ -56,13 +56,14 @@ namespace ShortUrl {
             throw new Exception($"{response.StatusCode} {message}");
         }
 
-        private static HttpClient CreateHttpClient(string token) {
+        public static HttpClient CreateHttpClient(string token) {
             var client = HttpClientFactory.Create();
             client.DefaultRequestHeaders.Clear();
             client.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
             client.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "application/json");
-            client.DefaultRequestHeaders.TryAddWithoutValidation("Token", token);
+            if (string.IsNullOrEmpty(token) == false)
+                client.DefaultRequestHeaders.TryAddWithoutValidation("Token", token);
             return client;
         }
     }

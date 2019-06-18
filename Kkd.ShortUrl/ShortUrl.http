@@ -1,0 +1,29 @@
+@host = http://localhost:5000
+
+@adimnToken = B1AB999F48D4DFEC2DA4449AEAC8C4B2
+
+### 创建用户
+POST {{host}}/api/user/create HTTP/1.1
+Accept: application/json, text/plain, */*
+Content-Type: application/json
+token: {{adimnToken}}
+
+"中融万博"
+
+
+### 生成ShortUrl
+POST {{host}}/api/cmd/create HTTP/1.1
+Accept: application/json, text/plain, */*
+Content-Type: application/json
+token: 2F93C5E011468E838120E37095F43EBE
+
+"https://baidu.com"
+
+
+### 查询短地址
+POST  {{host}}/api/cmd/query HTTP/1.1
+Accept: application/json, text/plain, */*
+Content-Type: application/json
+token: 2F93C5E011468E838120E37095F43EBE
+
+"https://localhost:5001/TIQvX1"
