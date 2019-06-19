@@ -1,28 +1,35 @@
 ﻿using System;
-using System.Linq;
 using System.Text;
 using Kkd.ShortUrl.Modals;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace Kkd.ShortUrl.Controllers {
     [Route("api/[controller]/[action]")]
     [ApiController]
     public class CmdController : ControllerBase {
+        private readonly ILogger<CmdController> _logger;
         private readonly Service _service;
-        private readonly IOptions<AppSettings> _setting;
 
-        public CmdController(IOptions<AppSettings> settings) {
+        public CmdController(ILogger<CmdController> logger) {
             _service = Service.GetInstance();
-            _setting = settings;
+            _logger = logger;
         }
 
         [HttpPost]
         public ActionResult Create([FromBody] string longUrl) {
-            if (CheckToken(out var badRequest)) return badRequest;
-            //var url = Request.GetDisplayUrl();
+            var err = _service.CheckToken(Request);
+            if (err != null) {
+                _logger.LogWarning("生成，返回:404 {@err};  参数:{@longUrl} 调用:{@sourceUrl}", err, longUrl,
+                    _service.GetRemote(Request));
+                return BadRequest(err);
+            }
+
             var url = GetBaseUrl();
             var ret = _service.Create(longUrl, url);
+            _logger.LogInformation("生成：{@ret} 调用:{@sourceUrl}", JsonConvert.SerializeObject(ret),
+                _service.GetRemote(Request));
             return Ok(ret);
         }
 
@@ -34,49 +41,53 @@ namespace Kkd.ShortUrl.Controllers {
             return url;
         }
 
-        private bool CheckToken(out ActionResult badRequest) {
-            badRequest = null;
-            var header =
-                Request.Headers.FirstOrDefault(d => d.Key.Equals("token", StringComparison.InvariantCultureIgnoreCase));
-            if (string.IsNullOrEmpty(header.Key)) {
-                badRequest = BadRequest("没有指定Token。");
-                return true;
-            }
-
-            try {
-                _service.CheckUser(header.Value[0]);
-            }
-            catch (Exception e) {
-                {
-                    badRequest = BadRequest($"{e.Message}");
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
         [HttpPost]
         public ActionResult Query([FromBody] string shortUrl) {
-            if (CheckToken(out var badRequest)) return badRequest;
+            var err = _service.CheckToken(Request);
+            if (err != null) {
+                _logger.LogWarning("查询，返回:404 {@err};  参数:{@shortUrl} 调用:{@sourceUrl}", err, shortUrl,
+                    _service.GetRemote(Request));
+                return BadRequest(err);
+            }
+
             var baseUrl = GetBaseUrl();
-            if (shortUrl.IndexOf(baseUrl, StringComparison.OrdinalIgnoreCase) == -1)
-                return Ok(new ShortUrlResult {
+            if (shortUrl.IndexOf(baseUrl, StringComparison.OrdinalIgnoreCase) == -1) {
+                var shortUrlResult = new ShortUrlResult {
                     Code = -3,
+                    ShortUrl = shortUrl,
                     ErrMsg = "无效的地址。"
-                });
+                };
+
+                WriteLog(shortUrl, shortUrlResult);
+                return Ok(shortUrlResult);
+            }
+
             var tmp = shortUrl.Substring(baseUrl.Length + 1);
             var ret = _service.GetLongUrl(tmp);
-            if (ret == null)
-                return Ok(new ShortUrlResult {
+            if (ret == null) {
+                var shortUrlResult = new ShortUrlResult {
                     Code = -3,
+                    ShortUrl = shortUrl,
                     ErrMsg = "没找到"
-                });
-            return Ok(new ShortUrlResult {
+                };
+                WriteLog(shortUrl, shortUrlResult);
+                return Ok(shortUrlResult);
+            }
+
+            var urlResult = new ShortUrlResult {
                 Code = 0,
                 ShortUrl = shortUrl,
                 LongUrl = ret
-            });
+            };
+            WriteLog(shortUrl, urlResult);
+            return Ok(urlResult);
+        }
+
+        private void WriteLog(string shortUrl, ShortUrlResult shortUrlResult) {
+            _logger.LogInformation("查询，返回:200 {@ret};  参数:{@shortUrl} 调用:{@sourceUrl}",
+                shortUrlResult,
+                shortUrl,
+                _service.GetRemote(Request));
         }
     }
 }

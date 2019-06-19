@@ -1,4 +1,6 @@
-﻿using Kkd.ShortUrl.Modals;
+﻿using System;
+using System.IO;
+using Kkd.ShortUrl.Modals;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -7,6 +9,7 @@ using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
 
@@ -23,6 +26,10 @@ namespace Kkd.ShortUrl {
         public void ConfigureServices(IServiceCollection services) {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.Configure<AppSettings>(Configuration.GetSection(nameof(AppSettings)));
+
+            // Add DbContext using SQL Server Provider
+            services.AddDbContext<ShortUrlContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("DBConnectString")));
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IOptions<AppSettings> settings) {
@@ -37,11 +44,20 @@ namespace Kkd.ShortUrl {
             var options = new RewriteOptions().Add(AppRule);
             app.UseRewriter(options);
 
-            using (var dc = new ShortUrlContext()) {
-                dc.Database.Migrate();
-            }
+            // 需要添加在"app.UseMvc();"前面，否则不生效。
+            app.UseCors(builder =>
+                builder.AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .SetIsOriginAllowed(_ => {
+                        Console.WriteLine($"调用源:{_}");
+                        return true;
+                    })
+                    .AllowCredentials());
 
             app.UseMvc();
+            app.UseStaticFiles(new StaticFileOptions {
+                FileProvider = new PhysicalFileProvider(Directory.GetCurrentDirectory())
+            });
         }
 
         private void AppRule(RewriteContext context) {

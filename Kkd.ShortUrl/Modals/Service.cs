@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.AspNetCore.Http;
 
 namespace Kkd.ShortUrl.Modals {
     public class Service {
@@ -184,12 +185,31 @@ namespace Kkd.ShortUrl.Modals {
 
             if (isAdmin)
                 if (_userAdmin.Token != token)
-                    throw new Exception("非法操作。");
+                    throw new Exception($"非法操作。Token:{token}");
 
             using (var dc = new ShortUrlContext()) {
                 var user = dc.Users.FirstOrDefault(d => d.Token == token && d.Status == (int) EntityStatus.Init);
-                if (user == null) throw new Exception("Token无效。");
+                if (user == null) throw new Exception($"Token无效,Token:{token}");
             }
+        }
+
+        public string GetRemote(HttpRequest request) {
+            return $"{request.HttpContext.Connection.RemoteIpAddress}:{request.HttpContext.Connection.RemotePort}";
+        }
+
+        public string CheckToken(HttpRequest request, bool isAdmin = false) {
+            var header =
+                request.Headers.FirstOrDefault(d => d.Key.Equals("token", StringComparison.InvariantCultureIgnoreCase));
+            if (string.IsNullOrEmpty(header.Key)) return "没有指定Token。";
+
+            try {
+                CheckUser(header.Value[0], isAdmin);
+            }
+            catch (Exception e) {
+                return e.Message;
+            }
+
+            return null;
         }
     }
 
